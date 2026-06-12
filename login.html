@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>เข้าสู่ระบบ — S41F4H BIO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Noto+Sans+Thai:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <style>
+    :root{--bg:#050810;--bg2:#080d1a;--navy:#0a1628;--blue:#0d47a1;--accent:#1565c0;--glow:#1e88e5;--bright:#42a5f5;--line:rgba(30,136,229,0.18);--text:#e8f0fe;--muted:rgba(232,240,254,0.5);--white:#ffffff;--error:#ef5350;--success:#66bb6a}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:'Noto Sans Thai',sans-serif;font-weight:400;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;animation:gridDrift 20s linear infinite}
+    @keyframes gridDrift{from{background-position:0 0}to{background-position:48px 48px}}
+    canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+    .orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
+    .orb-1{width:500px;height:500px;background:radial-gradient(circle,rgba(13,71,161,.3),transparent 70%);top:-150px;right:-120px;animation:orbFloat1 12s ease-in-out infinite}
+    .orb-2{width:350px;height:350px;background:radial-gradient(circle,rgba(21,101,192,.2),transparent 70%);bottom:-80px;left:-80px;animation:orbFloat2 15s ease-in-out infinite}
+    @keyframes orbFloat1{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,30px)}}
+    @keyframes orbFloat2{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-40px)}}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 32px;background:rgba(5,8,16,.75);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+    .nav-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:17px;letter-spacing:2px;color:var(--white);text-decoration:none;animation:logoPulse 3s ease-in-out infinite}
+    .nav-logo span{color:var(--bright)}
+    @keyframes logoPulse{0%,100%{text-shadow:0 0 8px rgba(66,165,245,0)}50%{text-shadow:0 0 20px rgba(66,165,245,.7),0 0 40px rgba(66,165,245,.3)}}
+    .nav-register{font-family:'Noto Sans Thai',sans-serif;font-size:14px;font-weight:600;padding:9px 22px;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;background:var(--blue);border:1px solid var(--accent);color:var(--white);box-shadow:0 0 20px rgba(13,71,161,.4);position:relative;overflow:hidden;transition:all .2s}
+    .nav-register::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);transform:skewX(-20deg);animation:shimmer 3s ease-in-out infinite}
+    @keyframes shimmer{0%{left:-100%}50%,100%{left:160%}}
+    .nav-register:hover{background:var(--accent);box-shadow:0 0 32px rgba(21,101,192,.6);transform:translateY(-1px)}
+    .page{position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:center;padding:100px 24px 60px}
+    .card{width:100%;max-width:420px;background:rgba(8,13,26,.85);border:1px solid var(--line);border-radius:24px;padding:40px 36px 36px;backdrop-filter:blur(20px);position:relative;overflow:hidden;animation:cardIn .7s ease both}
+    @keyframes cardIn{from{opacity:0;transform:translateY(32px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+    .card::before{content:'';position:absolute;top:0;left:-100%;width:50%;height:2px;background:linear-gradient(90deg,transparent,var(--bright),transparent);animation:borderBeam 4s linear infinite}
+    @keyframes borderBeam{from{left:-50%}to{left:150%}}
+    .card::after{content:'';position:absolute;top:-60px;left:-60px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(30,136,229,.1),transparent 70%);pointer-events:none}
+    .card-icon{width:60px;height:60px;border-radius:16px;margin:0 auto 20px;background:rgba(13,71,161,.3);border:1px solid rgba(30,136,229,.3);display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--bright);animation:iconGlow 2.5s ease-in-out infinite}
+    @keyframes iconGlow{0%,100%{box-shadow:0 0 12px rgba(30,136,229,.2)}50%{box-shadow:0 0 28px rgba(66,165,245,.5)}}
+    .card-title{font-family:'Orbitron',monospace;font-weight:700;font-size:22px;text-align:center;color:var(--white);margin-bottom:6px}
+    .card-sub{text-align:center;font-size:13px;color:var(--muted);margin-bottom:32px;line-height:1.7}
+    .form-group{margin-bottom:18px}
+    .form-label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px}
+    .form-label i{color:var(--bright);font-size:12px}
+    .input-wrap{position:relative;display:flex;align-items:center}
+    .input-icon{position:absolute;left:14px;font-size:14px;color:var(--muted);transition:color .2s;pointer-events:none}
+    .toggle-pw{position:absolute;right:14px;font-size:14px;color:var(--muted);cursor:pointer;transition:color .2s;background:none;border:none;padding:4px}
+    .toggle-pw:hover{color:var(--bright)}
+    input[type="text"],input[type="password"]{width:100%;padding:13px 44px 13px 42px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:10px;color:var(--white);font-family:'Noto Sans Thai',sans-serif;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s,background .2s}
+    input::placeholder{color:var(--muted)}
+    input:focus{border-color:var(--glow);background:rgba(30,136,229,.06);box-shadow:0 0 0 3px rgba(30,136,229,.15)}
+    .input-wrap:focus-within .input-icon{color:var(--bright)}
+    @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+    .card.shake{animation:shake .4s ease}
+    .error-banner{display:none;align-items:center;gap:10px;background:rgba(239,83,80,.1);border:1px solid rgba(239,83,80,.3);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--error);margin-bottom:18px}
+    .error-banner.show{display:flex;animation:fadeIn .3s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+    .form-extras{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:8px}
+    .remember{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);cursor:pointer;user-select:none}
+    .remember input[type="checkbox"]{display:none}
+    .checkbox-box{width:18px;height:18px;border-radius:5px;border:1px solid var(--line);background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;transition:border-color .2s,background .2s;flex-shrink:0}
+    .remember input:checked+.checkbox-box{border-color:var(--bright);background:rgba(30,136,229,.2)}
+    .remember input:checked+.checkbox-box::after{content:'';width:5px;height:9px;border-right:2px solid var(--bright);border-bottom:2px solid var(--bright);transform:rotate(45deg) translateY(-1px)}
+    .forgot{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s}
+    .forgot:hover{color:var(--bright)}
+    .btn-submit{width:100%;padding:14px;border-radius:10px;background:var(--blue);border:1px solid var(--accent);color:var(--white);font-family:'Noto Sans Thai',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 0 24px rgba(13,71,161,.5);position:relative;overflow:hidden;transition:background .2s,box-shadow .2s,transform .15s}
+    .btn-submit::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);transform:skewX(-20deg);animation:shimmer 3s ease-in-out infinite}
+    .btn-submit:hover{background:var(--accent);box-shadow:0 0 36px rgba(21,101,192,.7);transform:translateY(-2px)}
+    .btn-submit:active{transform:translateY(0)}
+    .btn-submit.loading{pointer-events:none;opacity:.8}
+    .btn-submit .spinner{display:none;width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .btn-submit.loading .btn-label{display:none}
+    .btn-submit.loading .spinner{display:block}
+    .or-line{display:flex;align-items:center;gap:12px;margin:20px 0}
+    .or-line::before,.or-line::after{content:'';flex:1;height:1px;background:var(--line)}
+    .or-line span{font-size:12px;color:var(--muted);white-space:nowrap}
+    .card-footer{text-align:center;font-size:13px;color:var(--muted)}
+    .card-footer a{color:var(--bright);text-decoration:none;font-weight:600}
+    .card-footer a:hover{text-decoration:underline}
+    .toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(80px);background:rgba(8,13,26,.95);border:1px solid var(--line);border-radius:12px;padding:14px 24px;font-size:14px;color:var(--text);display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.4);transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s;z-index:999;opacity:0;white-space:nowrap}
+    .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+    @media(max-width:480px){nav{padding:14px 16px}.nav-logo{font-size:14px}.card{padding:32px 22px 28px}}
+  </style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<nav>
+  <a class="nav-logo" href="index.html">S41F4H <span>BIO</span></a>
+  <a class="nav-register" href="register.html"><i class="fa-solid fa-user-plus"></i> สมัครฟรี</a>
+</nav>
+<div class="page">
+  <div class="card" id="loginCard">
+    <div class="card-icon"><i class="fa-solid fa-right-to-bracket"></i></div>
+    <h1 class="card-title">ยินดีต้อนรับกลับ</h1>
+    <p class="card-sub">เข้าสู่ระบบเพื่อจัดการ Linkbio ของคุณ</p>
+    <div class="error-banner" id="errorBanner">
+      <i class="fa-solid fa-circle-xmark"></i>
+      <span id="errorMsg">Username หรือรหัสผ่านไม่ถูกต้อง</span>
+    </div>
+    <div class="form-group" id="group-username">
+      <label class="form-label" for="username"><i class="fa-solid fa-at"></i> ชื่อผู้ใช้ (Username)</label>
+      <div class="input-wrap">
+        <i class="fa-solid fa-user input-icon"></i>
+        <input type="text" id="username" placeholder="กรอก Username ของคุณ" autocomplete="username" spellcheck="false" oninput="clearError()" />
+      </div>
+    </div>
+    <div class="form-group" id="group-password">
+      <label class="form-label" for="password"><i class="fa-solid fa-lock"></i> รหัสผ่าน</label>
+      <div class="input-wrap">
+        <i class="fa-solid fa-lock input-icon"></i>
+        <input type="password" id="password" placeholder="กรอกรหัสผ่านของคุณ" autocomplete="current-password" oninput="clearError()" onkeydown="enterSubmit(event)" />
+        <button class="toggle-pw" type="button" onclick="togglePw()"><i class="fa-solid fa-eye" id="eyeIcon"></i></button>
+      </div>
+    </div>
+    <div class="form-extras">
+      <label class="remember">
+        <input type="checkbox" id="rememberMe" />
+        <span class="checkbox-box"></span>
+        จดจำฉันไว้
+      </label>
+      <a class="forgot" href="#" onclick="showToast('ฟีเจอร์นี้ยังไม่เปิดใช้งาน','info');return false"><i class="fa-solid fa-key"></i> ลืมรหัสผ่าน?</a>
+    </div>
+    <button class="btn-submit" id="submitBtn" onclick="handleLogin()">
+      <span class="btn-label"><i class="fa-solid fa-right-to-bracket"></i> เข้าสู่ระบบ</span>
+      <div class="spinner"></div>
+    </button>
+    <div class="or-line"><span>ยังไม่มีบัญชี?</span></div>
+    <div class="card-footer"><a href="register.html"><i class="fa-solid fa-user-plus"></i> สมัครสมาชิกฟรี</a></div>
+  </div>
+</div>
+<div class="toast" id="toast">
+  <i id="toastIcon" class="fa-solid fa-circle-info" style="color:var(--bright)"></i>
+  <span id="toastMsg"></span>
+</div>
+<script>
+const canvas=document.getElementById('particles'),ctx=canvas.getContext('2d');
+let W,H,pts=[];
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+resize();window.addEventListener('resize',resize);
+function rnd(a,b){return Math.random()*(b-a)+a}
+for(let i=0;i<100;i++)pts.push({x:rnd(0,innerWidth),y:rnd(0,innerHeight),r:rnd(.5,2),dx:rnd(-.15,.15),dy:rnd(-.3,-.05),a:rnd(.2,.8),f:rnd(.002,.005)});
+(function draw(){ctx.clearRect(0,0,W,H);pts.forEach((p,i)=>{p.x+=p.dx;p.y+=p.dy;p.a-=p.f;if(p.a<=0||p.y<-10)pts[i]={x:rnd(0,W),y:H+5,r:rnd(.5,2),dx:rnd(-.15,.15),dy:rnd(-.3,-.05),a:rnd(.2,.8),f:rnd(.002,.005)};ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(66,165,245,${p.a})`;ctx.fill();});requestAnimationFrame(draw);})();
+function togglePw(){const inp=document.getElementById('password'),icon=document.getElementById('eyeIcon');if(inp.type==='password'){inp.type='text';icon.className='fa-solid fa-eye-slash';}else{inp.type='password';icon.className='fa-solid fa-eye';}}
+function enterSubmit(e){if(e.key==='Enter')handleLogin();}
+function clearError(){document.getElementById('errorBanner').classList.remove('show');}
+function showToast(msg,type){const t=document.getElementById('toast'),ic=document.getElementById('toastIcon'),m=document.getElementById('toastMsg');ic.className=type==='ok'?'fa-solid fa-circle-check':'fa-solid fa-circle-info';ic.style.color=type==='ok'?'var(--success)':'var(--bright)';m.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+function handleLogin(){const u=document.getElementById('username').value.trim(),p=document.getElementById('password').value,btn=document.getElementById('submitBtn'),card=document.getElementById('loginCard');if(!u||!p){document.getElementById('errorMsg').textContent='กรุณากรอก Username และรหัสผ่าน';document.getElementById('errorBanner').classList.add('show');card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');setTimeout(()=>card.classList.remove('shake'),400);return;}btn.classList.add('loading');setTimeout(()=>{btn.classList.remove('loading');document.getElementById('errorMsg').textContent='ระบบเข้าสู่ระบบยังไม่เปิดใช้งาน — เร็วๆ นี้!';document.getElementById('errorBanner').classList.add('show');card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');setTimeout(()=>card.classList.remove('shake'),400);},1200);}
+</script>
+</body>
+</html>
