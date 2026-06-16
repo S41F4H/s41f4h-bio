@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — S41F4H BIO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Noto+Sans+Thai:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <style>
+    :root{--bg:#050810;--bg2:#080d1a;--navy:#0a1628;--blue:#0d47a1;--accent:#1565c0;--glow:#1e88e5;--bright:#42a5f5;--line:rgba(30,136,229,0.18);--text:#e8f0fe;--muted:rgba(232,240,254,0.5);--white:#ffffff;--success:#66bb6a;--warn:#ffa726}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:'Noto Sans Thai',sans-serif;font-weight:400;min-height:100vh;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;animation:gridDrift 20s linear infinite}
+    @keyframes gridDrift{from{background-position:0 0}to{background-position:48px 48px}}
+    canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+    .orb{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0}
+    .orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(13,71,161,.25),transparent 70%);top:-200px;left:-150px;animation:orbFloat1 14s ease-in-out infinite}
+    .orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(21,101,192,.18),transparent 70%);bottom:-100px;right:-100px;animation:orbFloat2 17s ease-in-out infinite}
+    @keyframes orbFloat1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,30px)}}
+    @keyframes orbFloat2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-40px)}}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:rgba(5,8,16,.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--line)}
+    .nav-left{display:flex;align-items:center;gap:16px}
+    .nav-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:16px;letter-spacing:2px;color:var(--white);text-decoration:none;animation:logoPulse 3s ease-in-out infinite}
+    .nav-logo span{color:var(--bright)}
+    @keyframes logoPulse{0%,100%{text-shadow:0 0 8px rgba(66,165,245,0)}50%{text-shadow:0 0 20px rgba(66,165,245,.7),0 0 40px rgba(66,165,245,.3)}}
+    .nav-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;background:rgba(30,136,229,.15);border:1px solid rgba(30,136,229,.3);color:var(--bright);letter-spacing:.5px}
+    .nav-right{display:flex;align-items:center;gap:12px}
+    .nav-user{display:flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:99px;cursor:pointer;transition:border-color .2s,background .2s;position:relative}
+    .nav-user:hover{border-color:var(--bright);background:rgba(30,136,229,.08)}
+    .user-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--bright));display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:700}
+    .user-name{font-size:13px;font-weight:600;color:var(--text)}
+    .nav-dropdown{position:absolute;top:calc(100% + 10px);right:0;background:rgba(8,13,26,.97);border:1px solid var(--line);border-radius:12px;padding:6px;min-width:180px;backdrop-filter:blur(16px);box-shadow:0 16px 40px rgba(0,0,0,.5);opacity:0;transform:translateY(-8px) scale(.97);pointer-events:none;transition:all .2s cubic-bezier(.34,1.56,.64,1);z-index:200}
+    .nav-user.open .nav-dropdown{opacity:1;transform:translateY(0) scale(1);pointer-events:all}
+    .dropdown-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;font-size:13px;color:var(--text);cursor:pointer;transition:background .15s,color .15s;text-decoration:none}
+    .dropdown-item:hover{background:rgba(30,136,229,.12);color:var(--bright)}
+    .dropdown-item.danger:hover{background:rgba(239,83,80,.1);color:#ef5350}
+    .dropdown-item i{width:16px;text-align:center;font-size:13px}
+    .dropdown-sep{height:1px;background:var(--line);margin:4px 0}
+    .session-info{font-size:11px;color:var(--muted);padding:8px 14px;display:flex;align-items:center;gap:6px}
+    .session-info i{color:var(--bright);font-size:11px}
+    .wrapper{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:88px 24px 60px}
+    .welcome{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:36px;animation:fadeUp .7s ease both}
+    .welcome-text h1{font-family:'Orbitron',monospace;font-weight:700;font-size:clamp(20px,4vw,28px);color:var(--white);margin-bottom:6px}
+    .welcome-text h1 span{color:var(--bright)}
+    .welcome-text p{font-size:14px;color:var(--muted);line-height:1.7}
+    .btn-create{display:inline-flex;align-items:center;gap:10px;font-family:'Noto Sans Thai',sans-serif;font-size:15px;font-weight:700;padding:13px 28px;border-radius:12px;background:var(--blue);border:1px solid var(--accent);color:var(--white);cursor:pointer;text-decoration:none;box-shadow:0 0 28px rgba(13,71,161,.5);position:relative;overflow:hidden;transition:background .2s,box-shadow .2s,transform .15s;white-space:nowrap}
+    .btn-create::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transform:skewX(-20deg);animation:shimmer 3s ease-in-out infinite}
+    @keyframes shimmer{0%{left:-100%}50%,100%{left:160%}}
+    .btn-create:hover{background:var(--accent);box-shadow:0 0 40px rgba(21,101,192,.7);transform:translateY(-2px)}
+    .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+    .section-head h2{font-family:'Orbitron',monospace;font-size:16px;font-weight:700;color:var(--white);display:flex;align-items:center;gap:10px}
+    .section-head h2 i{color:var(--bright);font-size:15px}
+    .btn-sm{display:inline-flex;align-items:center;gap:6px;font-family:'Noto Sans Thai',sans-serif;font-size:13px;font-weight:600;padding:7px 16px;border-radius:8px;cursor:pointer;text-decoration:none;transition:all .2s}
+    .btn-sm-ghost{background:transparent;border:1px solid var(--line);color:var(--muted)}
+    .btn-sm-ghost:hover{border-color:var(--bright);color:var(--bright);background:rgba(30,136,229,.08)}
+    .bio-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin-bottom:40px;animation:fadeUp .7s .1s ease both}
+    .bio-card-new{background:rgba(8,13,26,.6);border:2px dashed rgba(30,136,229,.25);border-radius:18px;padding:48px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;cursor:pointer;min-height:200px;transition:border-color .25s,background .25s,transform .25s}
+    .bio-card-new:hover{border-color:rgba(66,165,245,.5);background:rgba(13,71,161,.1);transform:translateY(-4px)}
+    .bio-card-new .new-icon{width:56px;height:56px;border-radius:14px;background:rgba(13,71,161,.3);border:1px solid rgba(30,136,229,.3);display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--bright);transition:box-shadow .3s}
+    .bio-card-new:hover .new-icon{box-shadow:0 0 24px rgba(66,165,245,.4)}
+    .bio-card-new .new-title{font-size:15px;font-weight:700;color:var(--white)}
+    .bio-card-new .new-sub{font-size:12px;color:var(--muted);text-align:center;line-height:1.6}
+    .empty-state{grid-column:1 / -1;display:flex;flex-direction:column;align-items:center;padding:48px 24px;gap:14px;text-align:center}
+    .empty-icon{width:72px;height:72px;border-radius:20px;background:rgba(13,71,161,.15);border:1px solid rgba(30,136,229,.2);display:flex;align-items:center;justify-content:center;font-size:30px;color:rgba(66,165,245,.4)}
+    .empty-title{font-size:16px;font-weight:700;color:rgba(232,240,254,.5)}
+    .empty-sub{font-size:13px;color:var(--muted);max-width:300px;line-height:1.7}
+    .load-section{animation:fadeUp .7s .15s ease both;margin-bottom:40px}
+    .load-box{background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:28px;position:relative;overflow:hidden}
+    .load-box::after{content:'';position:absolute;top:0;left:-100%;width:50%;height:2px;background:linear-gradient(90deg,transparent,var(--bright),transparent);animation:borderBeam 5s linear infinite}
+    @keyframes borderBeam{from{left:-50%}to{left:150%}}
+    .load-inner{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+    .load-icon{width:52px;height:52px;border-radius:14px;flex-shrink:0;background:rgba(13,71,161,.25);border:1px solid rgba(30,136,229,.25);display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--bright);animation:iconGlow 2.5s ease-in-out infinite}
+    @keyframes iconGlow{0%,100%{box-shadow:0 0 10px rgba(30,136,229,.15)}50%{box-shadow:0 0 24px rgba(66,165,245,.4)}}
+    .load-text{flex:1;min-width:180px}
+    .load-text h3{font-size:16px;font-weight:700;color:var(--white);margin-bottom:5px}
+    .load-text p{font-size:13px;color:var(--muted);line-height:1.7}
+    .load-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn-load{display:inline-flex;align-items:center;gap:8px;font-family:'Noto Sans Thai',sans-serif;font-size:14px;font-weight:600;padding:11px 22px;border-radius:10px;cursor:pointer;transition:all .2s;text-decoration:none}
+    .btn-load-primary{background:rgba(13,71,161,.35);border:1px solid rgba(30,136,229,.4);color:var(--bright)}
+    .btn-load-primary:hover{background:rgba(13,71,161,.55);box-shadow:0 0 20px rgba(30,136,229,.3);transform:translateY(-1px)}
+    .btn-load-ghost{background:transparent;border:1px solid var(--line);color:var(--muted)}
+    .btn-load-ghost:hover{border-color:var(--bright);color:var(--bright)}
+    .tips-section{animation:fadeUp .7s .2s ease both}
+    .tips-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+    .tip-card{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:flex;gap:14px;align-items:flex-start;transition:border-color .2s,transform .2s}
+    .tip-card:hover{border-color:rgba(30,136,229,.35);transform:translateY(-2px)}
+    .tip-icon{width:36px;height:36px;border-radius:9px;flex-shrink:0;background:rgba(13,71,161,.2);border:1px solid rgba(30,136,229,.2);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--bright)}
+    .tip-text h4{font-size:13px;font-weight:700;color:var(--white);margin-bottom:4px}
+    .tip-text p{font-size:12px;color:var(--muted);line-height:1.6}
+    .modal-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .25s}
+    .modal-overlay.open{opacity:1;pointer-events:all}
+    .modal{background:rgba(8,13,26,.97);border:1px solid var(--line);border-radius:20px;padding:32px 28px;width:100%;max-width:380px;position:relative;overflow:hidden;transform:scale(.93) translateY(20px);transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+    .modal-overlay.open .modal{transform:scale(1) translateY(0)}
+    .modal::before{content:'';position:absolute;top:0;left:-100%;width:50%;height:2px;background:linear-gradient(90deg,transparent,var(--bright),transparent);animation:borderBeam 4s linear infinite}
+    .modal-icon{width:52px;height:52px;border-radius:14px;margin:0 auto 16px;background:rgba(13,71,161,.25);border:1px solid rgba(30,136,229,.25);display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--bright)}
+    .modal h3{font-family:'Orbitron',monospace;font-size:18px;font-weight:700;text-align:center;color:var(--white);margin-bottom:8px}
+    .modal p{font-size:13px;color:var(--muted);text-align:center;line-height:1.7;margin-bottom:24px}
+    .modal-btns{display:flex;flex-direction:column;gap:10px}
+    .modal-btn{width:100%;padding:13px;border-radius:10px;cursor:pointer;font-family:'Noto Sans Thai',sans-serif;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;text-decoration:none}
+    .modal-btn-primary{background:var(--blue);border:1px solid var(--accent);color:var(--white);box-shadow:0 0 20px rgba(13,71,161,.4)}
+    .modal-btn-primary:hover{background:var(--accent);transform:translateY(-1px)}
+    .modal-btn-ghost{background:transparent;border:1px solid var(--line);color:var(--muted)}
+    .modal-btn-ghost:hover{border-color:var(--bright);color:var(--bright)}
+    .modal-close{position:absolute;top:14px;right:14px;width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--muted);cursor:pointer;transition:background .2s,color .2s}
+    .modal-close:hover{background:rgba(239,83,80,.12);color:#ef5350;border-color:rgba(239,83,80,.3)}
+    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:rgba(8,13,26,.97);border:1px solid var(--line);border-radius:12px;padding:13px 22px;font-size:14px;color:var(--text);display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.5);transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s;z-index:999;opacity:0;white-space:nowrap}
+    .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:600px){nav{padding:12px 16px}.nav-logo{font-size:14px}.nav-badge{display:none}.wrapper{padding:76px 16px 48px}.welcome{flex-direction:column}.btn-create{width:100%;justify-content:center}.load-inner{flex-direction:column}}
+  </style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<nav>
+  <div class="nav-left">
+    <a class="nav-logo" href="index.html">S41F4H <span>BIO</span></a>
+    <span class="nav-badge"><i class="fa-solid fa-gauge-high"></i> Dashboard</span>
+  </div>
+  <div class="nav-right">
+    <div class="nav-user" id="userMenu" onclick="toggleMenu()">
+      <div class="user-avatar" id="userInitial">?</div>
+      <span class="user-name" id="userDisplayName">กำลังโหลด...</span>
+      <i class="fa-solid fa-chevron-down" style="font-size:11px;color:var(--muted);margin-left:2px;"></i>
+      <div class="nav-dropdown">
+        <div class="session-info"><i class="fa-solid fa-clock"></i><span id="sessionTimeLeft">กำลังโหลด...</span></div>
+        <div class="dropdown-sep"></div>
+        <a class="dropdown-item" href="#" onclick="toast('ฟีเจอร์นี้ยังไม่เปิดใช้งาน','info');return false"><i class="fa-solid fa-user"></i> โปรไฟล์</a>
+        <a class="dropdown-item" href="#" onclick="toast('ฟีเจอร์นี้ยังไม่เปิดใช้งาน','info');return false"><i class="fa-solid fa-gear"></i> ตั้งค่า</a>
+        <div class="dropdown-sep"></div>
+        <a class="dropdown-item danger" href="#" onclick="handleLogout();return false"><i class="fa-solid fa-right-from-bracket"></i> ออกจากระบบ</a>
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="wrapper">
+  <div class="welcome">
+    <div class="welcome-text">
+      <h1>สวัสดี, <span id="welcomeName">...</span> 👋</h1>
+      <p>จัดการ Linkbio ของคุณได้จากที่นี่ — สร้าง แก้ไข หรือดูสถิติ</p>
+    </div>
+    <button class="btn-create" onclick="openCreateModal()"><i class="fa-solid fa-plus"></i> สร้าง Bio ใหม่</button>
+  </div>
+  <div class="section-head">
+    <h2><i class="fa-solid fa-layer-group"></i> Bio ของคุณ</h2>
+    <button class="btn-sm btn-sm-ghost" onclick="openLoadModal()"><i class="fa-solid fa-cloud-arrow-down"></i> โหลดข้อมูลเก่า</button>
+  </div>
+  <div class="bio-grid">
+    <div class="bio-card-new" onclick="openCreateModal()">
+      <div class="new-icon"><i class="fa-solid fa-plus"></i></div>
+      <div class="new-title">สร้าง Bio ใหม่</div>
+      <div class="new-sub">เพิ่ม Linkbio ใหม่ได้เลย<br />ไม่จำกัดจำนวน</div>
+    </div>
+    <div class="empty-state">
+      <div class="empty-icon"><i class="fa-solid fa-layer-group"></i></div>
+      <div class="empty-title">ยังไม่มี Bio</div>
+      <div class="empty-sub">กดปุ่ม "สร้าง Bio ใหม่" เพื่อเริ่มต้นสร้าง Linkbio ของคุณได้เลย</div>
+    </div>
+  </div>
+  <div class="load-section">
+    <div class="section-head"><h2><i class="fa-solid fa-cloud-arrow-down"></i> โหลดข้อมูลเก่า</h2></div>
+    <div class="load-box">
+      <div class="load-inner">
+        <div class="load-icon"><i class="fa-solid fa-database"></i></div>
+        <div class="load-text">
+          <h3>มีไฟล์ Bio เก่าอยู่ใช่ไหม?</h3>
+          <p>หากคุณเคยสร้าง Bio ไว้ก่อนหน้า สามารถนำเข้าไฟล์ได้ที่นี่<br />รองรับไฟล์ .json จาก S41F4H BIO</p>
+        </div>
+        <div class="load-actions">
+          <button class="btn-load btn-load-primary" onclick="openLoadModal()"><i class="fa-solid fa-cloud-arrow-down"></i> โหลดข้อมูล</button>
+          <button class="btn-load btn-load-ghost" onclick="toast('ฟีเจอร์นี้ยังไม่เปิดใช้งาน','info')"><i class="fa-solid fa-circle-info"></i> รายละเอียด</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tips-section">
+    <div class="section-head"><h2><i class="fa-solid fa-lightbulb"></i> เริ่มต้นอย่างไรดี?</h2></div>
+    <div class="tips-grid">
+      <div class="tip-card"><div class="tip-icon"><i class="fa-solid fa-plus"></i></div><div class="tip-text"><h4>สร้าง Bio แรก</h4><p>กดปุ่ม "สร้าง Bio ใหม่" แล้วใส่ข้อมูลและลิงก์ของคุณ</p></div></div>
+      <div class="tip-card"><div class="tip-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div><div class="tip-text"><h4>ปรับแต่งธีม</h4><p>เลือกสี ฟอนต์ และรูปแบบการแสดงผลได้ตามใจชอบ</p></div></div>
+      <div class="tip-card"><div class="tip-icon"><i class="fa-solid fa-share-nodes"></i></div><div class="tip-text"><h4>แชร์ลิงก์</h4><p>คัดลอก URL ของ Bio แล้วแปะใน Instagram, TikTok หรือ Twitter Bio</p></div></div>
+      <div class="tip-card"><div class="tip-icon"><i class="fa-solid fa-chart-line"></i></div><div class="tip-text"><h4>ดูสถิติ</h4><p>ติดตามจำนวนคนที่คลิกลิงก์แต่ละอัน (เร็วๆ นี้)</p></div></div>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="createModal">
+  <div class="modal">
+    <div class="modal-close" onclick="closeModal('createModal')"><i class="fa-solid fa-xmark"></i></div>
+    <div class="modal-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+    <h3>สร้าง Bio ใหม่</h3>
+    <p>ฟีเจอร์นี้กำลังพัฒนาอยู่<br />เร็วๆ นี้คุณจะสามารถสร้างและตกแต่ง Linkbio ได้อย่างเต็มรูปแบบ</p>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-primary" onclick="toast('ระบบกำลังพัฒนา — เร็วๆ นี้!','info');closeModal('createModal')"><i class="fa-solid fa-bell"></i> แจ้งเตือนเมื่อพร้อม</button>
+      <button class="modal-btn modal-btn-ghost" onclick="closeModal('createModal')">ปิด</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="loadModal">
+  <div class="modal">
+    <div class="modal-close" onclick="closeModal('loadModal')"><i class="fa-solid fa-xmark"></i></div>
+    <div class="modal-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div>
+    <h3>โหลดข้อมูลเก่า</h3>
+    <p>ระบบนำเข้าข้อมูลกำลังพัฒนาอยู่<br />เร็วๆ นี้คุณจะสามารถนำเข้าไฟล์ Bio เก่าได้ที่นี่</p>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-primary" onclick="toast('ระบบกำลังพัฒนา — เร็วๆ นี้!','info');closeModal('loadModal')"><i class="fa-solid fa-bell"></i> แจ้งเตือนเมื่อพร้อม</button>
+      <button class="modal-btn modal-btn-ghost" onclick="closeModal('loadModal')">ปิด</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toastEl"><i id="toastIcon" class="fa-solid fa-circle-info" style="color:var(--bright)"></i><span id="toastMsg"></span></div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBuJZsZdKzfOaf1qp-HQTw5foE7eGG8IcQ",
+  authDomain: "saifahbio.firebaseapp.com",
+  projectId: "saifahbio",
+  storageBucket: "saifahbio.firebasestorage.app",
+  messagingSenderId: "18122681263",
+  appId: "1:18122681263:web:2949c35dd7b1f020511d5a"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const SESSION_DURATION = 12 * 60 * 60 * 1000;
+
+const canvas = document.getElementById('particles'), ctx = canvas.getContext('2d');
+let W, H, pts = [];
+function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+resize(); window.addEventListener('resize', resize);
+function rnd(a,b){ return Math.random()*(b-a)+a; }
+for(let i=0;i<100;i++) pts.push({x:rnd(0,innerWidth),y:rnd(0,innerHeight),r:rnd(.5,1.8),dx:rnd(-.12,.12),dy:rnd(-.25,-.04),a:rnd(.15,.7),f:rnd(.002,.004)});
+(function draw(){ctx.clearRect(0,0,W,H);pts.forEach((p,i)=>{p.x+=p.dx;p.y+=p.dy;p.a-=p.f;if(p.a<=0||p.y<-10)pts[i]={x:rnd(0,W),y:H+5,r:rnd(.5,1.8),dx:rnd(-.12,.12),dy:rnd(-.25,-.04),a:rnd(.15,.7),f:rnd(.002,.004)};ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(66,165,245,${p.a})`;ctx.fill();});requestAnimationFrame(draw);})();
+
+function checkSession(){
+  const loginTime = localStorage.getItem('sbio_login_time');
+  if(!loginTime || (Date.now() - parseInt(loginTime)) >= SESSION_DURATION){
+    localStorage.removeItem('sbio_login_time');
+    return false;
+  }
+  return true;
+}
+
+function updateSessionLabel(){
+  const loginTime = localStorage.getItem('sbio_login_time');
+  if(!loginTime) return;
+  const remaining = SESSION_DURATION - (Date.now() - parseInt(loginTime));
+  if(remaining <= 0){ handleLogout(); return; }
+  const h = Math.floor(remaining / 3600000);
+  const m = Math.floor((remaining % 3600000) / 60000);
+  document.getElementById('sessionTimeLeft').textContent = `เหลือเวลา ${h} ชม. ${m} นาที`;
+}
+
+onAuthStateChanged(auth, async (user) => {
+  if(!user || !checkSession()){
+    localStorage.removeItem('sbio_login_time');
+    window.location.href = 'login.html';
+    return;
+  }
+  const snap = await getDoc(doc(db, 'users', user.uid));
+  if(snap.exists()){
+    const username = snap.data().username;
+    document.getElementById('welcomeName').textContent = username;
+    document.getElementById('userDisplayName').textContent = username;
+    document.getElementById('userInitial').textContent = username.charAt(0).toUpperCase();
+  }
+  updateSessionLabel();
+  setInterval(updateSessionLabel, 60000);
+});
+
+window.handleLogout = async function(){
+  await signOut(auth);
+  localStorage.removeItem('sbio_login_time');
+  window.location.href = 'login.html';
+};
+
+window.toggleMenu = function(){ document.getElementById('userMenu').classList.toggle('open'); };
+document.addEventListener('click', e => { const m = document.getElementById('userMenu'); if(!m.contains(e.target)) m.classList.remove('open'); });
+window.openCreateModal = function(){ document.getElementById('createModal').classList.add('open'); };
+window.openLoadModal = function(){ document.getElementById('loadModal').classList.add('open'); };
+window.closeModal = function(id){ document.getElementById(id).classList.remove('open'); };
+document.querySelectorAll('.modal-overlay').forEach(o => { o.addEventListener('click', e => { if(e.target===o) o.classList.remove('open'); }); });
+window.toast = function(msg, type){ const t=document.getElementById('toastEl'),ic=document.getElementById('toastIcon'),m=document.getElementById('toastMsg');ic.className=type==='ok'?'fa-solid fa-circle-check':'fa-solid fa-circle-info';ic.style.color=type==='ok'?'var(--success)':'var(--bright)';m.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),3000); };
+</script>
+</body>
+</html>
